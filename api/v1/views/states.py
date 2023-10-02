@@ -35,12 +35,12 @@ def state_id_del(state_id):
     except KeyError:
         abort(404)
 
-    storage.delete(state_obj)
+    storage.delete(state_obj).save()
     return jsonify({}), "200"
 
 @app_views.route("/states", methods=["POST"], strict_slashes=False)
 def state_add():
-    """Add state."""
+    """Add a state."""
     body = request.get_json()
     if body is None or (isinstance(body, dict) == False):
         abort(400, "Not a JSON")
