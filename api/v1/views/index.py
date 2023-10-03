@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""API status module."""
+"""Module for API status and statistic endpoints."""
 from api.v1.views import app_views
 from flask import jsonify
 from models import storage
@@ -27,7 +27,6 @@ def api_endpoint_stats():
         "State": State,
         "User": User
     }
-    end_points = {}
-    for key, value in models.items():
-        end_points[key.lower()] = storage.count(value)
-    return jsonify(end_points)
+    return jsonify({
+        key.lower(): storage.count(value) for key, value in models.items()
+        })

@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+"""Module for views API states endpoints."""
 from api.v1.views import app_views
 from flask import abort, request, jsonify
 from models import storage
@@ -13,26 +15,20 @@ def states():
 @app_views.route("/states/<state_id>", strict_slashes=False)
 def states_id(state_id):
     """Retrieve state object."""
-    if state_id == None:
-        abort(404)
     state_id = "{}.{}".format(State.__name__, state_id)
-    try:
-        state_obj = storage.all(State)[state_id]
-    except KeyError:
+    state_obj = storage.all(State).get(state_id)
+    if not state_obj:
         abort(404)
 
-    return jsonify(state_obj.to_dict()), "OK"
+    return jsonify(state_obj.to_dict())
 
 @app_views.route("/states/<state_id>",
                  methods=["DELETE"], strict_slashes=False)
 def state_id_del(state_id):
     """Deletes state object."""
-    if state_id == None:
-        abort(404)
     state_id = "{}.{}".format(State.__name__, state_id)
-    try:
-        state_obj = storage.all(State)[state_id]
-    except KeyError:
+    state_obj = storage.all(State).get(state_id)
+    if not state_obj:
         abort(404)
 
     storage.delete(state_obj).save()
@@ -42,13 +38,13 @@ def state_id_del(state_id):
 def state_add():
     """Add a state."""
     body = request.get_json()
-    if body is None or (isinstance(body, dict) == False):
+    if body is None:
         abort(400, "Not a JSON")
     if "name" not in body.keys():
         abort(400, "Missing name")
-    name = body["name"]
-    new_state = State(name=name)
-    storage.new(new_state).save()
+
+    new_state = State(**body)
+    new_state.save()
     return jsonify(new_state.to_dict()), "201"
 
 @app_views.route("/states/<state_id>", methods=["PUT"], strict_slashes=False)
@@ -57,12 +53,11 @@ def state_update(state_id):
     if state_id is None:
         abort(404)
     body = request.get_json()
-    if body is None or (isinstance(body, dict) == False):
+    if body is None:
         abort(400, "Not a JSON")
     state_id = "{}.{}".format(State.__name__, state_id)
-    try:
-        state_obj = storage.all(State)[state_id]
-    except KeyError:
+    state_obj = storage.all(State).get(state_id)
+    if state_obj:
         abort(404)
 
     for key, value in body.items():
