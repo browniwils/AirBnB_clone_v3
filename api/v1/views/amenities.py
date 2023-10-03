@@ -12,29 +12,29 @@ def amenities():
     amenity_objs = storage.all(Amenity)
     return jsonify([amenity.to_dict() for amenity in amenity_objs.values()])
 
+
 @app_views.route("/amenities/<amenity_id>", strict_slashes=False)
 def amenities_id(amenity_id):
     """Retrieve amenity object."""
-    amenity_id = "{}.{}".format(Amenity.__name__, amenity_id)
-
-    amenity_obj = storage.all(Amenity).get(amenity_id)
+    amenity_obj = storage.get(Amenity, amenity_id)
     if amenity_obj is None:
         abort(404)
 
     return jsonify(amenity_obj.to_dict())
 
+
 @app_views.route("/amenities/<amenity_id>",
                  methods=["DELETE"], strict_slashes=False)
 def amenity_id_del(amenity_id):
     """Deletes amenity object."""
-    amenity_id = "{}.{}".format(Amenity.__name__, amenity_id)
-    amenity_obj = storage.all(Amenity).get(amenity_id)
+    amenity_obj = storage.get(Amenity, amenity_id)
     if amenity_obj is None:
         abort(404)
 
     storage.delete(amenity_obj)
     storage.save()
     return jsonify({})
+
 
 @app_views.route("/amenities", methods=["POST"], strict_slashes=False)
 def amenity_add():
@@ -48,14 +48,14 @@ def amenity_add():
     new_amenity.save()
     return jsonify(new_amenity.to_dict()), "201"
 
+
 @app_views.route("/amenities/<amenity_id>", methods=["PUT"], strict_slashes=False)
 def amenity_update(amenity_id):
     """Updates amenity object."""
     body = request.get_json()
     if body is None:
         abort(400, "Not a JSON")
-    amenity_id = "{}.{}".format(Amenity.__name__, amenity_id)
-    amenity_obj = storage.all(Amenity).get(amenity_id)
+    amenity_obj = storage.get(Amenity, amenity_id)
     if amenity_obj is None:
         abort(404)
 

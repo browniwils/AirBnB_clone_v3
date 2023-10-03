@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Module for API status and statistic endpoints."""
+"""HBNB RESTfull API endpoint for status and statistic."""
 from api.v1.views import app_views
 from flask import jsonify
 from models import storage
@@ -16,9 +16,10 @@ def status():
     """Return status of API."""
     return jsonify(status="OK")
 
+
 @app_views.route("/stats", strict_slashes=False)
 def api_endpoint_stats():
-    """Return API endpoints stats"""
+    """Return API endpoints stats."""
     models = {
         "Amenity": Amenity,
         "City": City,

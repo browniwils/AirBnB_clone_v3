@@ -80,3 +80,10 @@ class DBStorage:
     def count(self, cls=None):
         """Count class instances."""
         return (len(self.all(cls)))
+
+    def get(self, cls, id):
+        """Retrieve on object with class and id."""
+        if cls not in classes.values():
+            return None
+        _id = "{}.{}".format(cls.__name__, id)
+        return self.all(cls).get(_id)

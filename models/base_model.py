@@ -2,14 +2,12 @@
 """
 Contains class BaseModel
 """
-
 from datetime import datetime
 import models
-from os import getenv
-import sqlalchemy
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
+
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
@@ -20,7 +18,7 @@ else:
 
 
 class BaseModel:
-    """The BaseModel class from which future classes will be derived"""
+    """The BaseModel class from which future classes will be derived."""
     if models.storage_t == "db":
         id = Column(String(60), primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow)
@@ -68,7 +66,7 @@ class BaseModel:
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
-        if file_engine is False:
+        if file_engine:
             del new_dict["password"]
         return new_dict
 
